@@ -1,2 +1,13 @@
 [build]
   publish = "OneDrive/Desktop/Netflix software/public"
+  functions = "OneDrive/Desktop/Netflix software/netlify/functions"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
