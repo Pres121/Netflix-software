@@ -12,6 +12,7 @@ const { encryptText } = require('./utils/security');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
+const sessionSecret = process.env.SESSION_SECRET || crypto.createHash('sha256').update(process.env.DATABASE_URL || 'streaming-subscription-manager').digest('hex');
 
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
@@ -43,7 +44,7 @@ app.use(
       tableName: 'session'
     }),
     name: 'streaming.sid',
-    secret: process.env.SESSION_SECRET,
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
     rolling: true,

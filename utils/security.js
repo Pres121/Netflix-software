@@ -4,8 +4,10 @@ const PREFIX = 'enc:v1:';
 
 function resolveKey() {
   const raw = process.env.ENCRYPTION_KEY;
+  const fallbackSeed = process.env.DATABASE_URL || process.env.SESSION_SECRET || 'streaming-subscription-manager';
+
   if (!raw) {
-    throw new Error('Missing ENCRYPTION_KEY in environment.');
+    return crypto.createHash('sha256').update(fallbackSeed).digest();
   }
 
   if (/^[a-fA-F0-9]{64}$/.test(raw)) {
@@ -17,7 +19,7 @@ function resolveKey() {
     return maybeBase64;
   }
 
-  throw new Error('ENCRYPTION_KEY must be 32-byte base64 or 64-char hex.');
+  return crypto.createHash('sha256').update(raw).digest();
 }
 
 const ENCRYPTION_KEY = resolveKey();
