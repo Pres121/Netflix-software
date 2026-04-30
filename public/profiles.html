@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profiles | Streaming Manager</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body data-page="profiles">
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="topbar-main">
+          <div class="brand">Streaming Manager</div>
+          <button id="navToggle" class="menu-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primaryNav">
+            <span class="menu-icon"><span></span><span></span><span></span></span>
+          </button>
+          <nav class="nav" id="primaryNav">
+            <a href="/dashboard.html">Dashboard</a>
+            <a href="/accounts.html">Accounts</a>
+            <a href="/profiles.html" class="active">Profiles</a>
+            <a href="/payments.html">Payments</a>
+          </nav>
+        </div>
+        <div class="topbar-actions">
+          <button id="logoutButton" class="danger">Logout</button>
+        </div>
+      </header>
+
+      <section class="page-hero">
+        <div class="hero-card">
+          <h1 class="hero-title">Profiles are the customer record.</h1>
+          <p class="hero-text">Each profile stores the customer name, phone, login credentials, and payment state in one place.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Add or Update Profile</h2>
+        <form id="profileForm" class="form-grid">
+          <input id="profileId" type="hidden" />
+
+          <div>
+            <label for="profileAccountId">Account</label>
+            <select id="profileAccountId" required></select>
+          </div>
+
+          <div>
+            <label for="profileName">Profile Name</label>
+            <input id="profileName" type="text" required />
+          </div>
+
+          <div>
+            <label for="profileUsername">Username</label>
+            <input id="profileUsername" type="text" required />
+          </div>
+
+          <div>
+            <label for="profilePassword">Password</label>
+            <input id="profilePassword" type="text" required />
+          </div>
+
+          <div>
+            <label for="profileFullName">Customer Full Name</label>
+            <input id="profileFullName" type="text" required />
+          </div>
+
+          <div>
+            <label for="profilePhone">Customer Phone</label>
+            <input id="profilePhone" type="text" required />
+          </div>
+
+          <div class="actions-row" style="grid-column: 1 / -1">
+            <button id="profileSubmit" type="submit">Save Profile</button>
+          </div>
+        </form>
+        <div id="profilesMessage" class="message"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Profiles List</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Account</th>
+                <th>Profile Name</th>
+                <th>Username</th>
+                <th>Customer Name</th>
+                <th>Phone</th>
+                <th>Payment Status</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="profilesTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/main.js"></script>
+  </body>
+</html>

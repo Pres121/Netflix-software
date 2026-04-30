@@ -1,6 +1,11 @@
 [build]
-  publish = "OneDrive/Desktop/Netflix software/public"
-  functions = "OneDrive/Desktop/Netflix software/netlify/functions"
+  command = "npm install"
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  directory = "netlify/functions"
+  external_node_modules = ["bcrypt", "pg", "express", "connect-pg-simple", "express-session", "helmet", "express-rate-limit", "dotenv", "serverless-http"]
 
 [[redirects]]
   from = "/api/*"
