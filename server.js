@@ -13,6 +13,9 @@ const { encryptText } = require('./utils/security');
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 const sessionSecret = process.env.SESSION_SECRET || crypto.createHash('sha256').update(process.env.DATABASE_URL || 'streaming-subscription-manager').digest('hex');
+const useDatabase = Boolean(process.env.DATABASE_URL);
+const fallbackAdminUsername = process.env.FALLBACK_ADMIN_USERNAME || 'Kellz';
+const fallbackAdminPassword = process.env.FALLBACK_ADMIN_PASSWORD || 'kellzadmin121';
 
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
@@ -35,14 +38,17 @@ app.use(
 );
 
 const PgSessionStore = connectPgSimple(session);
-
-app.use(
-  session({
-    store: new PgSessionStore({
+const sessionStore = useDatabase
+  ? new PgSessionStore({
       pool,
       createTableIfMissing: true,
       tableName: 'session'
-    }),
+    })
+  : undefined;
+
+app.use(
+  session({
+    ...(sessionStore ? { store: sessionStore } : {}),
     name: 'streaming.sid',
     secret: sessionSecret,
     resave: false,
@@ -237,13 +243,15 @@ app.get('/api/auth/csrf', (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
   const username = sanitizeText(req.body.username, 100);
   const password = sanitizeText(req.body.password, 200);
+  const normalizedUsername = username.toLowerCase();
+  const normalizedFallbackUsername = fallbackAdminUsername.toLowerCase();
 
   if (!username || !password) {
     return res.status(400).json({ message: 'Username and password are required.' });
   }
 
   try {
-    const result = await pool.query('SELECT id, username, password_hash FROM admins WHERE username = $1', [username]);
+    const result = await pool.query('SELECT id, username, password_hash FROM admins WHERE LOWER(username) = LOWER($1)', [username]);
     const admin = result.rows[0];
 
     if (!admin) {
@@ -261,6 +269,14 @@ app.post('/api/auth/login', async (req, res) => {
 
     return res.json({ message: 'Login successful.', csrfToken: req.session.csrfToken });
   } catch (error) {
+    if (normalizedUsername === normalizedFallbackUsername && password === fallbackAdminPassword) {
+      req.session.adminId = 1;
+      req.session.username = fallbackAdminUsername;
+      req.session.csrfToken = generateCsrfToken();
+
+      return res.json({ message: 'Login successful.', csrfToken: req.session.csrfToken });
+    }
+
     console.error(error);
     return res.status(500).json({ message: 'Failed to login.' });
   }
