@@ -80,6 +80,7 @@ copy .env.example .env
 
 - `SESSION_SECRET` with a long random value
 - `ENCRYPTION_KEY` as a 64-character hex key
+- `DATABASE_URL` for production deployments using a hosted PostgreSQL database
 
 6. Seed an admin account:
 
@@ -112,3 +113,4 @@ http://localhost:3000
 - Account and profile passwords are stored as plain text for operational visibility in this admin tool. For stronger security in production, use encryption-at-rest.
 - Session store is persisted in PostgreSQL.
 - Password fields for streaming accounts/profiles are encrypted before saving in the database.
+- For Netlify production, set `DATABASE_URL` in the site environment variables so the function can connect to your hosted database.
