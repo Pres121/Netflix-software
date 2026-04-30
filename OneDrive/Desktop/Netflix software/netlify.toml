@@ -1,7 +1,10 @@
 [build]
-  command = "npm install"
   publish = "public"
   functions = "netlify/functions"
+
+[functions]
+  directory = "netlify/functions"
+  external_node_modules = ["bcrypt", "pg", "express", "connect-pg-simple", "express-session", "helmet", "express-rate-limit", "dotenv"]
 
 [[redirects]]
   from = "/api/*"
